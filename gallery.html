@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Brynn - Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; 
+            z-index: 1000;
+            display: flex;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .navbar ul li {
+            margin: 0 1rem;
+            padding: 0.5rem;
+        }
+        
+        .navbar ul li a {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #9fef00;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar ul li a:hover::after {
+            width: 80%;
+        }
+        
+        .navbar ul li a:hover,
+        .navbar ul li a.active {
+            color: #9fef00;
+        }
+        
+        /* ASCII Badge */
+        .ascii-badge {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            font-family: "Courier New", monospace;
+            font-size: 0.6rem;
+            line-height: 1.1;
+            white-space: pre;
+            color: #9fef00;
+            opacity: 0.6;
+            text-align: left;
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+            z-index: 999;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .ascii-badge:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 100px 2rem 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-header .lead {
+            font-size: 1.3rem;
+            color: #f4f4f4;
+            max-width: 800px;
+            margin: 0 auto 1rem;
+        }
+        
+        .page-header p {
+            color: #d4d4d4;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .gallery-item {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(159, 239, 0, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-image img.responsive-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;   /* or 'contain' if you prefer full image with bars */
+            display: block;
+        }
+        
+        .gallery-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .gallery-item:hover .gallery-image::before {
+            transform: translateX(100%);
+        }
+        
+        .gallery-info {
+            padding: 1.5rem;
+        }
+        
+        .gallery-info h3 {
+            color: #9fef00;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .gallery-info .location {
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+        
+        .gallery-info .location::before {
+            content: '📍 ';
+        }
+        
+        .gallery-info p {
+            color: #d4d4d4;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .gallery-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(159, 239, 0, 0.2);
+            border: 1px solid rgba(159, 239, 0, 0.5);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #9fef00;
+        }
+        
+        /* Categories */
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(159, 239, 0, 0.2);
+            border-color: #9fef00;
+            color: #9fef00;
+        }
+        
+        /* Social Links */
+        .social-container {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            text-decoration: none;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-link.github:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            color: #fff;
+        }
+        
+        .social-link.htb:hover {
+            background: rgba(159, 239, 0, 0.2);
+            border-color: #9fef00;
+            color: #9fef00;
+            box-shadow: 0 8px 25px rgba(159, 239, 0, 0.3);
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .htb-logo {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .htb-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar ul li {
+                margin: 0 0.5rem;
+            }
+            
+            .social-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="skills_certs.html">Skills & Certs</a></li>
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <pre class="ascii-badge">    *~~~\_._/~~~*       
+   *~  ( o o )  ~*    
+  *~   (  -  )   ~*  
+ **~~~o("===")o~~~**   
+**\/\/\/\/\/\/\/\/\**</pre>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Gallery</h1>
+            <p class="lead">Selected images from the years I have spent in wildlife conservation(anti-poaching) and physical security work.</p>
+            <p>These experiences helped shape my unique approach to risk assessment, observation, and understanding security from multiple perspectives.</p>
+        </div>
+
+        <!--  <div class="category-filters">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Wildlife Conservation</button>
+            <button class="filter-btn">Physical Security</button>
+            <button class="filter-btn">Field Work</button>
+        </div> 
+        -->
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="images/lions.jpg" alt="lions seen on patrol" class="responsive-img">
+                </div>
+                <div class="gallery-info">
+                    <h3>Wildlife Observation</h3>
+                    <p class="location">Southern Africa</p>
+                    <p>Field monitoring and data collection for conservation efforts helped me develop keen observation skills critical for both wildlife protection and security assessment.</p>
+                    <div class="gallery-tags">
+                        <span class="tag">Conservation</span>
+                        <span class="tag">Field Work</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="images/unicorns.jpg" alt="Chubby assault unicorns" class="responsive-img">
+                </div>
+                <div class="gallery-info">
+                    <h3>Habitat Assessment</h3>
+                    <p class="location">Southern Africa</p>
+                    <p>Surveying and documenting ecosystem health with various technological tools. This methodical approach to documentation has carried through to technical security assessments.</p>
+                    <div class="gallery-tags">
+                        <span class="tag">Conservation</span>
+                        <span class="tag">Research</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image"><img src="images/monitoring.jpg" alt="observing wildlife" class="responsive-img"></div>
+                <div class="gallery-info">
+                    <h3>Threat Analysis</h3>
+                    <p class="location">Southern Africa</p>
+                    <p>Risk assessment and mitigation planning for both wildlife and infrastructure protection has aided my ability to understand threat landscapes in diverse environments.</p>
+                    <div class="gallery-tags">
+                        <span class="tag">Security</span>
+                        <span class="tag">Risk Assessment</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image"><img src="images/mirror.jpg" alt="wildlife in a mirror" class="responsive-img"></div>
+                <div class="gallery-info">
+                    <h3>Data Collection</h3>
+                    <p class="location">Southern Africa</p>
+                    <p>Systematic data gathering and analysis from field observations where some of my early experiences with structured data collection and reporting.</p>
+                    <div class="gallery-tags">
+                        <span class="tag">Field Work</span>
+                        <span class="tag">Analysis</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="images/break.JPG" alt="Myself taking a break during patrol" class="responsive-img">
+                </div>
+                <div class="gallery-info">
+                    <h3>Remote Operations</h3>
+                    <p class="location">Southern Africa</p>
+                    <p>Working in challenging environments with limited resources instilled problem-solving and adaptability skills that are essential in cybersecurity.</p>
+                    <div class="gallery-tags">
+                        <span class="tag">Field Work</span>
+                        <span class="tag">Operations</span>
+                    </div>
+                </div>
+            </div>
+
+                        <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="images/uniform.jpg" alt="security uniform" class="responsive-img">
+                </div>
+                <div class="gallery-info">
+                    <h3>Physical Security</h3>
+                    <p class="location">Southern Africa</p>
+                    <p>Infrastructure protection and threat assessment, this experience directly translates to understanding security perimeters and access control.</p>
+                    <div class="gallery-tags">
+                        <span class="tag">Security</span>
+                        <span class="tag">Infrastructure</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="social-container">
+            <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
+                <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://app.hackthebox.com/profile/2040383" target="_blank" rel="noopener noreferrer" class="social-link htb">
+                <div class="htb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.996 0L1.11803 6V18L11.996 24L22.874 18V6L11.996 0Z" fill="#9FEF00"/>
+                        <path d="M14.5 8.5L12 7L9.5 8.5V11.5L7 13L9.5 14.5V17.5L12 19L14.5 17.5V14.5L17 13L14.5 11.5V8.5Z" fill="#1C1C1C"/>
+                        <path d="M12 10.5L13.5 11.5V13.5L12 14.5L10.5 13.5V11.5L12 10.5Z" fill="#9FEF00"/>
+                    </svg>
+                </div>
+                <span>Hack The Box</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

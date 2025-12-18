@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Brynn - Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; 
+            z-index: 1000;
+            display: flex;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .navbar ul li {
+            margin: 0 1rem;
+            padding: 0.5rem;
+        }
+        
+        .navbar ul li a {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #9fef00;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar ul li a:hover::after {
+            width: 80%;
+        }
+        
+        .navbar ul li a:hover,
+        .navbar ul li a.active {
+            color: #9fef00;
+        }
+        
+        /* ASCII Badge */
+        .ascii-badge {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            font-family: "Courier New", monospace;
+            font-size: 0.6rem;
+            line-height: 1.1;
+            white-space: pre;
+            color: #9fef00;
+            opacity: 0.6;
+            text-align: left;
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+            z-index: 999;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .ascii-badge:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 100px 2rem 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-header .lead {
+            font-size: 1.3rem;
+            color: #f4f4f4;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .project-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(159, 239, 0, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .project-card h3 {
+            color: #9fef00;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .project-card .project-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(159, 239, 0, 0.2);
+            border: 1px solid #9fef00;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #9fef00;
+            margin-bottom: 1rem;
+        }
+        
+        .project-card p {
+            color: #d4d4d4;
+            margin: 1rem 0;
+            line-height: 1.8;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #f4f4f4;
+        }
+        
+        .project-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: rgba(159, 239, 0, 0.2);
+            border: 2px solid #9fef00;
+            border-radius: 25px;
+            color: #9fef00;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .project-link:hover {
+            background: rgba(159, 239, 0, 0.3);
+            transform: scale(1.05);
+        }
+        
+        /* Social Links */
+        .social-container {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            text-decoration: none;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-link.github:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            color: #fff;
+        }
+        
+        .social-link.htb:hover {
+            background: rgba(159, 239, 0, 0.2);
+            border-color: #9fef00;
+            color: #9fef00;
+            box-shadow: 0 8px 25px rgba(159, 239, 0, 0.3);
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .htb-logo {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .htb-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar ul li {
+                margin: 0 0.5rem;
+            }
+            
+            .social-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="projects.html" class="active">Projects</a></li>
+            <li><a href="skills_certs.html">Skills & Certs</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <pre class="ascii-badge">    *~~~\_._/~~~*       
+   *~  ( o o )  ~*    
+  *~   (  -  )   ~*  
+ **~~~o("===")o~~~**   
+**\/\/\/\/\/\/\/\/\**</pre>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Projects</h1>
+            <p class="lead">A collection of hands-on tools and experiments showcasing security research, automation, and practical problem-solving.</p>
+        </div>
+
+        <div class="projects-grid">
+            <div class="project-card">
+                <span class="project-type">Web Scraping Tool</span>
+                <h3>Netnoodle</h3>
+                <p>A Python-based web scraper build as part of a hands on learning project. It is designed for efficient data extraction and automation. Built with a focus on clean code, error handling, and scalability.</p>
+                <div class="project-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">BeautifulSoup</span>
+                    <span class="tag">Automation</span>
+                </div>
+                <a href="https://github.com/Brynn-P/NetNoodle" class="project-link">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <span class="project-type">CTF Write-ups</span>
+                <h3>Capture The Flag</h3>
+                <p>Detailed write-ups of CTF challenges covering web exploitation, cryptography, reverse engineering, and more. Documenting the problem-solving process and key learnings. </p>
+                <p>(this section is still under development)</p>
+                <div class="project-tags">
+                    <span class="tag">Web Exploitation</span>
+                    <span class="tag">Cryptography</span>
+                    <span class="tag">CTF</span>
+                </div>
+                <a href="#" class="project-link">View Write-ups →</a>
+            </div>
+
+            <div class="project-card">
+                <span class="project-type">Lab Environment</span>
+                <h3>Security Lab Setup</h3>
+                <p>A virtualized security lab environment for practicing penetration testing, vulnerability assessment, and defensive security techniques.</p>
+                <p>(this section is still under development)</p>
+                <div class="project-tags">
+                    <span class="tag">VirtualBox</span>
+                    <span class="tag">Kali Linux</span>
+                    <span class="tag">Networking</span>
+                </div>
+                <a href="#" class="project-link">View Setup →</a>
+            </div>
+
+            <div class="project-card">
+                <span class="project-type">Automation Script</span>
+                <h3>Security Automation</h3>
+                <p>Bash and Python scripts for automating common security tasks, including log analysis, system hardening checks, and vulnerability scanning workflows.</p>
+                <p>(this section is still under development)</p>
+                <div class="project-tags">
+                    <span class="tag">Bash</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Automation</span>
+                </div>
+                <a href="#" class="project-link">View Scripts →</a>
+            </div>
+
+            <div class="project-card">
+                <span class="project-type">Documentation</span>
+                <h3>Learning Notes</h3>
+                <p>Organized notes and documentation covering cybersecurity concepts, tool usage, and best practices. A living resource that grows with each new challenge.</p>
+                <p>(this section is still under development)</p>
+                <div class="project-tags">
+                    <span class="tag">Documentation</span>
+                    <span class="tag">Best Practices</span>
+                    <span class="tag">Learning</span>
+                </div>
+                <a href="#" class="project-link">View Notes →</a>
+            </div>
+
+            <div class="project-card">
+                <span class="project-type">Coming Soon</span>
+                <h3>More Projects</h3>
+                <p>Additional projects in development. Check back soon for updates on new tools, challenges, and experiments in the security space.</p>
+                <p>(this section is still under development)</p>
+                <div class="project-tags">
+                    <span class="tag">In Progress</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="social-container">
+            <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
+                <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://app.hackthebox.com/profile/2040383" target="_blank" rel="noopener noreferrer" class="social-link htb">
+                <div class="htb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.996 0L1.11803 6V18L11.996 24L22.874 18V6L11.996 0Z" fill="#9FEF00"/>
+                        <path d="M14.5 8.5L12 7L9.5 8.5V11.5L7 13L9.5 14.5V17.5L12 19L14.5 17.5V14.5L17 13L14.5 11.5V8.5Z" fill="#1C1C1C"/>
+                        <path d="M12 10.5L13.5 11.5V13.5L12 14.5L10.5 13.5V11.5L12 10.5Z" fill="#9FEF00"/>
+                    </svg>
+                </div>
+                <span>Hack The Box</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
