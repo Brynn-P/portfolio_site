@@ -54,6 +54,7 @@
         
         .navbar ul {
             display: flex;
+            flex-wrap: wrap;
             list-style: none;
             width: 100%;
             justify-content: center;
@@ -374,8 +375,17 @@
                 font-size: 1.2rem;
             }
             
+            .navbar {
+                height: auto;              
+                padding: 0.5rem 0;         
+            }
+
+            .navbar ul {
+                flex-wrap: wrap;
+            }
+
             .navbar ul li {
-                margin: 0 0.5rem;
+                margin: 0.25rem 0.5rem;
             }
             
             .ascii-badge {
@@ -394,11 +404,11 @@
 <div class="container">
     <nav class="navbar" id="navbar">
         <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#Skills_Certs">Skills & Certs</a></li>
-            <li><a href="#gallery">Gallery</a></li>
-            <li><a href="#about">About</a></li>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="skills_certs.html">Skills & Certs</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="about.html">About</a></li>
         </ul>
     </nav>
 

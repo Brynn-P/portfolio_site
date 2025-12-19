@@ -34,6 +34,7 @@
         
         .navbar ul {
             display: flex;
+            flex-wrap: wrap;
             list-style: none;
             width: 100%;
             justify-content: center;
@@ -281,7 +282,7 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            h1 {
+            section h1 {
                 font-size: 2.5rem;
             }
             
@@ -289,13 +290,22 @@
                 font-size: 1.2rem;
             }
             
-            .content-box {
-                padding: 2rem;
-                margin: 1rem;
+            .navbar {
+                height: auto;              
+                padding: 0.5rem 0;         
+            }
+
+            .navbar ul {
+                flex-wrap: wrap;
+            }
+
+            .navbar ul li {
+                margin: 0.25rem 0.5rem;
             }
             
-            .navbar ul li {
-                margin: 0 0.5rem;
+            .ascii-badge {
+                font-size: 0.5rem;
+                right: 0.5rem;
             }
             
             .social-link {
@@ -333,14 +343,14 @@
 
             <div class="content-box">
                 <h1>Welcome</h1>
-                <p class="lead">Portfolio of a conservationist-turned-cybersecurity student</p>
+                <p class="lead">Portfolio of a conservationist turned cybersecurity student</p>
                 <p class="description">
                     I am currently a university student with a personal focus on security tooling, automation, and practical problem solving. 
                     Here you will find a snapshot of my background, current projects, and the path 
                     that took me from field work to ethical hacking.
                 </p>
                 <p class="description">
-                    My journey combines hands-on experience in wildlife conservation and physical 
+                    My journey combines hands on experience in wildlife conservation and physical 
                     security with a growing passion for developing expertise in cybersecurity, this allows me to bring a unique perspective 
                     to risk assessment, observation, and defense.
                 </p>

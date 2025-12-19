@@ -34,6 +34,7 @@
         
         .navbar ul {
             display: flex;
+            flex-wrap: wrap;
             list-style: none;
             width: 100%;
             justify-content: center;
@@ -278,16 +279,30 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .page-header h1 {
+            section h1 {
                 font-size: 2.5rem;
             }
             
-            .projects-grid {
-                grid-template-columns: 1fr;
+            .lead {
+                font-size: 1.2rem;
             }
             
+            .navbar {
+                height: auto;              
+                padding: 0.5rem 0;         
+            }
+
+            .navbar ul {
+                flex-wrap: wrap;
+            }
+
             .navbar ul li {
-                margin: 0 0.5rem;
+                margin: 0.25rem 0.5rem;
+            }
+            
+            .ascii-badge {
+                font-size: 0.5rem;
+                right: 0.5rem;
             }
             
             .social-link {
@@ -317,14 +332,14 @@
     <div class="main-content">
         <div class="page-header">
             <h1>Projects</h1>
-            <p class="lead">A collection of hands-on tools and experiments showcasing security research, automation, and practical problem-solving.</p>
+            <p class="lead">A collection of hands on tools and experiments showcasing security research, automation, and practical problem solving.</p>
         </div>
 
         <div class="projects-grid">
             <div class="project-card">
                 <span class="project-type">Web Scraping Tool</span>
                 <h3>Netnoodle</h3>
-                <p>A Python-based web scraper build as part of a hands on learning project. It is designed for efficient data extraction and automation. Built with a focus on clean code, error handling, and scalability.</p>
+                <p>A Python based web scraper build as part of a hands on learning project. It is designed for efficient data extraction and automation. Built with a focus on clean code, error handling, and scalability.</p>
                 <div class="project-tags">
                     <span class="tag">Python</span>
                     <span class="tag">BeautifulSoup</span>
@@ -334,16 +349,16 @@
             </div>
 
             <div class="project-card">
-                <span class="project-type">CTF Write-ups</span>
+                <span class="project-type">CTF Write ups</span>
                 <h3>Capture The Flag</h3>
-                <p>Detailed write-ups of CTF challenges covering web exploitation, cryptography, reverse engineering, and more. Documenting the problem-solving process and key learnings. </p>
+                <p>Detailed write ups of CTF challenges covering web exploitation, cryptography, reverse engineering, and more. Documenting the problem-solving process and key learnings. </p>
                 <p>(this section is still under development)</p>
                 <div class="project-tags">
                     <span class="tag">Web Exploitation</span>
                     <span class="tag">Cryptography</span>
                     <span class="tag">CTF</span>
                 </div>
-                <a href="#" class="project-link">View Write-ups →</a>
+                <a href="#" class="project-link">View Write ups →</a>
             </div>
 
             <div class="project-card">
