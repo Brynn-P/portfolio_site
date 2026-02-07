@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Brynn - Portfolio</title>
     
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <!-- Google Tag Manager with Consent Mode -->
+    <script>
+    // Set default consent to 'denied' before GTM loads
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    
+    gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'wait_for_update': 500
+    });
+    
+    // GTM
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MWRNHS8G');</script>
+    })(window,document,'script','dataLayer','GTM-MWRNHS8G');
+    </script>
     <!-- End Google Tag Manager -->
 
-
-     
     <style>
         * {
             margin: 0;
@@ -378,6 +387,65 @@
             opacity: 0.7;
         }
         
+        /* Consent Banner */
+        #consent-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid #9fef00;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            font-family: Georgia, serif;
+            z-index: 10000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        #consent-banner p {
+            margin-bottom: 10px;
+        }
+        
+        .consent-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        #accept-analytics,
+        #decline-analytics {
+            padding: 10px 25px;
+            border: 1px solid #9fef00;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: Georgia, serif;
+            transition: all 0.3s ease;
+        }
+        
+        #accept-analytics {
+            background: #9fef00;
+            color: #111;
+        }
+        
+        #accept-analytics:hover {
+            background: #8dd600;
+            box-shadow: 0 0 15px rgba(159, 239, 0, 0.4);
+        }
+        
+        #decline-analytics {
+            background: transparent;
+            color: #9fef00;
+        }
+        
+        #decline-analytics:hover {
+            background: rgba(159, 239, 0, 0.1);
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             section h1 {
@@ -410,6 +478,10 @@
                 padding: 0.6rem 1rem;
                 font-size: 0.8rem;
             }
+            
+            .consent-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -419,6 +491,16 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWRNHS8G"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+
+<!-- Consent Banner -->
+<div id="consent-banner">
+    <p><strong>Cookie Notice</strong></p>
+    <p>This site uses Google Analytics to understand how visitors interact with the site. No personal data is collected.</p>
+    <div class="consent-buttons">
+        <button id="accept-analytics">Accept</button>
+        <button id="decline-analytics">Decline</button>
+    </div>
+</div>
 
 <div class="container">
     <nav class="navbar" id="navbar">
@@ -443,7 +525,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <h1><a href="home.html">Home</a></h1>
             <p class="lead">Portfolio of a conservationis turned cybersecurity student, focused on security tooling, automation and practical problem solving.</p>
             <br>
-            
             
             <div class="social-container">
                 <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
@@ -481,7 +562,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <p class="lead">A collection my of hands on tools and experiments, from a Python web scraper (Netnoodle) to CTF write ups and lab environments.</p>
             <br>
             
-            
             <div class="social-container">
                 <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
                     <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
@@ -516,7 +596,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <h1><a href="Skills_Certs.html">Skills & Certs</a></h1>
             <p class="lead">Snapshot of the tools and platforms that have been worked with: Linux, Python, Bash, Git, VS Code and common security tooling.</p>
             <br>
-            
             
             <div class="social-container">
                 <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
@@ -585,7 +664,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         
         <div class="content-box">
             <h1><a href="about.html">About</a></h1>
-
             <p class="lead">A brief overview of my path from protecting landscapes and infrastructure to studying networks, exploits and defensive security.</p>
             <br>
             <div class="social-container">
@@ -638,83 +716,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // Reset scroll position on load
     document.body.scrollTop = document.documentElement.scrollTop = 0;
     container.scrollTop = 0;
-</script>
-
-<script>
-  // Wait for GTM/gtag to load before consent
-  function initConsent() {
-    if (typeof gtag !== 'undefined') {
-      // Consent handler
-      document.getElementById('accept-analytics').addEventListener('click', function() {
+    
+    // Consent management
+    const consentBanner = document.getElementById('consent-banner');
+    const acceptBtn = document.getElementById('accept-analytics');
+    const declineBtn = document.getElementById('decline-analytics');
+    
+    // Check if user has already made a choice
+    const consentChoice = localStorage.getItem('analytics_consent');
+    if (consentChoice) {
+        consentBanner.style.display = 'none';
+        
+        if (consentChoice === 'granted') {
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted'
+            });
+        }
+    }
+    
+    // Accept analytics
+    acceptBtn.addEventListener('click', () => {
         gtag('consent', 'update', {
-          'analytics_storage': 'granted',
-          'ad_storage': 'denied'
+            'analytics_storage': 'granted'
         });
-        document.getElementById('consent-banner').style.display = 'none';
         localStorage.setItem('analytics_consent', 'granted');
-      });
-
-      // Respect previous choice
-      if (localStorage.getItem('analytics_consent') === 'granted') {
-        document.getElementById('consent-banner').style.display = 'none';
-        gtag('consent', 'update', {
-          'analytics_storage': 'granted',
-          'ad_storage': 'denied'
-        });
-      }
-    } else {
-      setTimeout(initConsent, 100); // Try again in 100ms
-    }
-  }
-  
-  // Start when page loads
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initConsent);
-  } else {
-    initConsent();
-  }
+        consentBanner.style.display = 'none';
+    });
+    
+    // Decline analytics
+    declineBtn.addEventListener('click', () => {
+        localStorage.setItem('analytics_consent', 'denied');
+        consentBanner.style.display = 'none';
+    });
 </script>
-
-<!-- Consent Banner + GTM Consent (100% works) -->
-<style>
-#consent-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(26,26,26,.95);backdrop-filter:blur(10px);border-top:1px solid #9fef00;color:#fff;padding:15px;text-align:center;font-size:14px;font-family:Georgia,serif;z-index:9999}
-#accept-analytics{margin-left:15px;padding:8px 20px;background:rgba(159,239,0,.2);color:#9fef00;border:1px solid #9fef00;border-radius:4px;cursor:pointer;font-size:14px}
-#accept-analytics:hover{background:#9fef00;color:#111}
-</style>
-
-<div id="consent-banner">
-  This site uses analytics. <button id="accept-analytics">Allow</button>
-</div>
-
-<script>
-window.dataLayer=window.dataLayer||[];
-
-// Consent button - uses dataLayer directly (GTM reads this)
-document.getElementById('accept-analytics').onclick=function(){
-  window.dataLayer.push({
-    'event': 'consent_choice',
-    'consent_status': {
-      'analytics_storage': 'granted',
-      'ad_storage': 'denied'
-    }
-  });
-  document.getElementById('consent-banner').style.display='none';
-  localStorage.setItem('analytics_consent','granted');
-};
-
-// Previous consent
-if(localStorage.getItem('analytics_consent')==='granted'){
-  window.dataLayer.push({
-    'event': 'consent_choice',
-    'consent_status': {
-      'analytics_storage': 'granted',
-      'ad_storage': 'denied'
-    }
-  });
-  document.getElementById('consent-banner').style.display='none';
-}
-</script>
-
 
 </body>
 </html>
