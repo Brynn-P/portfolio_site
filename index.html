@@ -640,34 +640,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     container.scrollTop = 0;
 </script>
 
-<!-- Consent Banner -->
-<div id="consent-banner" style="position:fixed;bottom:0;left:0;right:0;background:rgba(26,26,26,0.95);backdrop-filter:blur(10px);border-top:1px solid rgba(159,239,0,0.3);color:#f4f4f4;padding:15px;text-align:center;font-family:Georgia,serif;font-size:14px;z-index:9999;">
-  This site uses Google Analytics for basic usage stats. 
-  <button id="accept-analytics" style="margin-left:15px;padding:8px 20px;background:rgba(159,239,0,0.2);color:#9fef00;border:1px solid #9fef00;border-radius:4px;cursor:pointer;font-family:inherit;font-size:14px;transition:all 0.3s;">Allow analytics</button>
-</div>
-
 <script>
-  // Consent handler
-  document.getElementById('accept-analytics').addEventListener('click', function() {
-    gtag('consent', 'update', {
-      'analytics_storage': 'granted',
-      'ad_storage': 'denied',
-      'ad_user_data': 'denied', 
-      'ad_personalization': 'denied'
-    });
-    document.getElementById('consent-banner').style.display = 'none';
-    localStorage.setItem('analytics_consent', 'granted'); // Remember choice
-  });
+  // Wait for GTM/gtag to load before consent
+  function initConsent() {
+    if (typeof gtag !== 'undefined') {
+      // Consent handler
+      document.getElementById('accept-analytics').addEventListener('click', function() {
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted',
+          'ad_storage': 'denied'
+        });
+        document.getElementById('consent-banner').style.display = 'none';
+        localStorage.setItem('analytics_consent', 'granted');
+      });
 
-  // Respect previous choice
-  if (localStorage.getItem('analytics_consent') === 'granted') {
-    document.getElementById('consent-banner').style.display = 'none';
-    gtag('consent', 'update', {
-      'analytics_storage': 'granted',
-      'ad_storage': 'denied',
-      'ad_user_data': 'denied',
-      'ad_personalization': 'denied'
-    });
+      // Respect previous choice
+      if (localStorage.getItem('analytics_consent') === 'granted') {
+        document.getElementById('consent-banner').style.display = 'none';
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted',
+          'ad_storage': 'denied'
+        });
+      }
+    } else {
+      setTimeout(initConsent, 100); // Try again in 100ms
+    }
+  }
+  
+  // Start when page loads
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initConsent);
+  } else {
+    initConsent();
   }
 </script>
 
