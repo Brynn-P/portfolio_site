@@ -675,5 +675,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
 </script>
 
+<!-- Consent Banner + GTM Consent (100% works) -->
+<style>
+#consent-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(26,26,26,.95);backdrop-filter:blur(10px);border-top:1px solid #9fef00;color:#fff;padding:15px;text-align:center;font-size:14px;font-family:Georgia,serif;z-index:9999}
+#accept-analytics{margin-left:15px;padding:8px 20px;background:rgba(159,239,0,.2);color:#9fef00;border:1px solid #9fef00;border-radius:4px;cursor:pointer;font-size:14px}
+#accept-analytics:hover{background:#9fef00;color:#111}
+</style>
+
+<div id="consent-banner">
+  This site uses analytics. <button id="accept-analytics">Allow</button>
+</div>
+
+<script>
+window.dataLayer=window.dataLayer||[];
+
+// Consent button - uses dataLayer directly (GTM reads this)
+document.getElementById('accept-analytics').onclick=function(){
+  window.dataLayer.push({
+    'event': 'consent_choice',
+    'consent_status': {
+      'analytics_storage': 'granted',
+      'ad_storage': 'denied'
+    }
+  });
+  document.getElementById('consent-banner').style.display='none';
+  localStorage.setItem('analytics_consent','granted');
+};
+
+// Previous consent
+if(localStorage.getItem('analytics_consent')==='granted'){
+  window.dataLayer.push({
+    'event': 'consent_choice',
+    'consent_status': {
+      'analytics_storage': 'granted',
+      'ad_storage': 'denied'
+    }
+  });
+  document.getElementById('consent-banner').style.display='none';
+}
+</script>
+
+
 </body>
 </html>
