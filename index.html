@@ -5,26 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Brynn - Portfolio</title>
     
-    <!-- Google Tag Manager with Consent Mode -->
+    <!-- Google tag (gtag.js) - Direct GA4 Implementation -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PCFPD59EYW"></script>
     <script>
-    // Set default consent to 'denied' before GTM loads
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    
-    gtag('consent', 'default', {
-        'analytics_storage': 'denied',
-        'ad_storage': 'denied',
-        'wait_for_update': 500
-    });
-    
-    // GTM
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MWRNHS8G');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        // Set default consent to denied
+        gtag('consent', 'default', {
+            'analytics_storage': 'denied',
+            'ad_storage': 'denied'
+        });
+        
+        gtag('js', new Date());
+        gtag('config', 'G-PCFPD59EYW');
     </script>
-    <!-- End Google Tag Manager -->
 
     <style>
         * {
@@ -487,11 +482,6 @@
 </head>
 <body>
 
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWRNHS8G"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
 <!-- Consent Banner -->
 <div id="consent-banner">
     <p><strong>Cookie Notice</strong></p>
@@ -523,7 +513,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="content-box">
             <h1><a href="home.html">Home</a></h1>
-            <p class="lead">Portfolio of a conservationis turned cybersecurity student, focused on security tooling, automation and practical problem solving.</p>
+            <p class="lead">Portfolio of a conservationist turned cybersecurity student, focused on security tooling, automation and practical problem solving.</p>
             <br>
             
             <div class="social-container">
@@ -741,6 +731,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         });
         localStorage.setItem('analytics_consent', 'granted');
         consentBanner.style.display = 'none';
+        
+        // Send a page view event to confirm it's working
+        gtag('event', 'page_view');
     });
     
     // Decline analytics
