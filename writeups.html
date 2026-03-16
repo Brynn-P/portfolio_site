@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Write-ups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; 
+            z-index: 1000;
+            display: flex;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar ul {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .navbar ul li {
+            margin: 0 1rem;
+            padding: 0.5rem;
+        }
+        
+        .navbar ul li a {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #9fef00;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar ul li a:hover::after {
+            width: 80%;
+        }
+        
+        .navbar ul li a:hover,
+        .navbar ul li a.active {
+            color: #9fef00;
+        }
+        
+        /* ASCII Badge */
+        .ascii-badge {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            font-family: "Courier New", monospace;
+            font-size: 0.6rem;
+            line-height: 1.1;
+            white-space: pre;
+            color: #9fef00;
+            opacity: 0.6;
+            text-align: left;
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+            z-index: 999;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .ascii-badge:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 100px 2rem 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-header .lead {
+            font-size: 1.3rem;
+            color: #f4f4f4;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .content-section:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(159, 239, 0, 0.3);
+        }
+        
+        .content-section h2 {
+            color: #9fef00;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #9fef00;
+            padding-left: 1rem;
+        }
+        
+        .content-section p {
+            color: #d4d4d4;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #9fef00, rgba(159, 239, 0, 0.3));
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.45rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: #9fef00;
+            border-radius: 50%;
+            border: 3px solid rgba(35, 37, 38, 1);
+        }
+        
+        .timeline-item h3 {
+            color: #9fef00;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-item .date {
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-item p {
+            color: #d4d4d4;
+            line-height: 1.7;
+        }
+        
+        /* Interests Grid */
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .interest-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .interest-card:hover {
+            background: rgba(159, 239, 0, 0.1);
+            border-color: #9fef00;
+            transform: translateY(-3px);
+        }
+        
+        .interest-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .interest-card h3 {
+            color: #9fef00;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .interest-card p {
+            color: #d4d4d4;
+            font-size: 0.9rem;
+        }
+        
+        /* Quote Box */
+        .quote-box {
+            background: rgba(159, 239, 0, 0.1);
+            border-left: 4px solid #9fef00;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+        
+        .quote-box p {
+            color: #f4f4f4;
+            font-style: italic;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        /* Social Links */
+        .social-container {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            text-decoration: none;
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-link.github:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            color: #fff;
+        }
+        
+        .social-link.htb:hover {
+            background: rgba(159, 239, 0, 0.2);
+            border-color: #9fef00;
+            color: #9fef00;
+            box-shadow: 0 8px 25px rgba(159, 239, 0, 0.3);
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .htb-logo {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .htb-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .lead {
+                font-size: 1.2rem;
+            }
+            
+            .navbar {
+                height: auto;              
+                padding: 0.5rem 0;         
+            }
+
+            .navbar ul {
+                flex-wrap: wrap;
+            }
+
+            .navbar ul li {
+                margin: 0.25rem 0.5rem;
+            }
+            
+            .ascii-badge {
+                font-size: 0.5rem;
+                right: 0.5rem;
+            }
+            
+            .social-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="skills_certs.html">Skills & Certs</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+        </ul>
+    </nav>
+
+    <pre class="ascii-badge">    *~~~\_._/~~~*       
+   *~  ( o o )  ~*    
+  *~   (  -  )   ~*  
+ **~~~o("===")o~~~**   
+**\/\/\/\/\/\/\/\/\**</pre>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Write ups</h1>
+            <p class="lead">This page is a work in progress where my writeups for various challenges will be published</p>
+        </div>
+
+        <div class="content-section">
+            <h2>My Write-ups</h2>
+            <p>
+                Being able to craft well worded and clear write-ups is a skill within its own right.
+                Although many people dont fully understand why this is important (I myself am still learning).
+                There are many benifits to a well formed write up. This includes being able to look back into my own process and learn about myself.
+                Learn about my own strenghts and weeknesses, learn where to improve(there is always room to improve)
+                Beyond that it also is a valuable resorce that i can use to look back at when I am stuck and find solutions to similar problems 
+            </p>
+            <p>
+               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+            </p>
+            
+            <div class="quote-box">
+                <p>"Security is not a product, but a process" - Bruce Schneier 
+                </p>
+                <p> Security is not just about the technology, it is about the deep understanding of systems, 
+                    this understanding enables you to identify vulnerabilities, 
+                    and provides you the right methods and tools to enable you to think like both defender and adversary.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>HTB Write-ups</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>Machine</h3>
+                    <p class="date">Latest</p>
+                    <p>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.  </p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3>Machine</h3>
+                    <p class="date">Recent</p>
+                    <p>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>Machine</h3>
+                    <p class="date">Other</p>
+                    <p>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. .</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Current Focus</h2>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+            </p>
+            <p>
+                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+            </p>
+        </div>
+
+        <div class="content-section">
+            <h2>CTF write-ups</h2>
+            <div class="interests-grid">
+                <div class="interest-card">
+                    <h3>CTF write-ups</h3>
+                    <p>Lorem ipsum dolor sit amet,</p>
+                </div>
+                
+                <div class="interest-card">
+                    <h3>CTF write-ups</h3>
+                    <p>Lorem ipsum dolor sit amet,</p>
+                </div>
+                
+                <div class="interest-card">
+                    <h3>CTF write-ups</h3>
+                    <p>Lorem ipsum dolor sit amet,</p>
+                </div>
+                
+                <div class="interest-card">
+                    <h3>CTF write-ups</h3>
+                    <p>Lorem ipsum dolor sit amet,</p>
+                </div>
+                
+                <div class="interest-card">
+                    <h3>CTF write-ups</h3>
+                    <p>Lorem ipsum dolor sit amet,</p>
+                </div>
+                
+                <div class="interest-card">
+                    <h3>CTF write-ups</h3>
+                    <p>Lorem ipsum dolor sit amet,</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Lorem ipsum dolor</h2>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+               Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+            </p>
+        </div>
+
+        <div class="social-container">
+            <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
+                <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://app.hackthebox.com/profile/2040383" target="_blank" rel="noopener noreferrer" class="social-link htb">
+                <div class="htb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.996 0L1.11803 6V18L11.996 24L22.874 18V6L11.996 0Z" fill="#9FEF00"/>
+                        <path d="M14.5 8.5L12 7L9.5 8.5V11.5L7 13L9.5 14.5V17.5L12 19L14.5 17.5V14.5L17 13L14.5 11.5V8.5Z" fill="#1C1C1C"/>
+                        <path d="M12 10.5L13.5 11.5V13.5L12 14.5L10.5 13.5V11.5L12 10.5Z" fill="#9FEF00"/>
+                    </svg>
+                </div>
+                <span>Hack The Box</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
