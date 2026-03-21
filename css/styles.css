@@ -218,6 +218,14 @@
         gap: 0.5rem;
         margin-top: 1rem;
     }
+
+    .project-card a,
+    .project-card a:visited,
+    .project-card a:hover,
+    .project-card a:active {
+        text-decoration: none;
+        color: inherit;
+    }
     
     .tag {
         padding: 0.3rem 0.8rem;
