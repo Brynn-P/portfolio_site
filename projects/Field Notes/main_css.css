@@ -4,6 +4,10 @@
         box-sizing: border-box;
     }
     
+    a:link, a:visited {
+        text-decoration: none; /* No underline by default */
+    }
+
     body {
         font-family: Georgia, 'Times New Roman', Times, serif;
         background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
