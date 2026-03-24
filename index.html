@@ -25,464 +25,7 @@
         });
     </script>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Georgia, 'Times New Roman', Times, serif;
-            background: #1a1a1a;
-            color: #fff;
-            height: 100vh;
-            line-height: 1.6;
-            overflow: hidden;
-        }
-        
-        .container {
-            width: 100%;
-            height: 100%;
-            overflow-y: scroll;
-            scroll-behavior: smooth;
-            scroll-snap-type: y mandatory;
-        }
-        
-        .lead {
-            font-size: 1.5rem;
-            margin: 1rem 0;
-        }
-        
-        /* Enhanced Navbar */
-        .navbar {
-            position: fixed;
-            top: 0; 
-            z-index: 1000;
-            display: flex;
-            width: 100%;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .navbar.scrolled {
-            background: rgba(0, 0, 0, 0.95);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .navbar ul {
-            display: flex;
-            flex-wrap: wrap;
-            list-style: none;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .navbar ul li {
-            margin: 0 1rem;
-            padding: 0.5rem;
-        }
-        
-        .navbar ul li a {
-            text-decoration: none;
-            text-transform: uppercase;
-            color: #f4f4f4;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .navbar ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: #9fef00;
-            transform: translateX(-50%);
-            transition: width 0.3s ease;
-        }
-        
-        .navbar ul li a:hover::after {
-            width: 80%;
-        }
-        
-        .navbar ul li a:hover {
-            color: #9fef00;
-        }
-        
-        /* Section Styles */
-        section {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            width: 100%;
-            height: 100vh;
-            scroll-snap-align: center;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        
-        /* Animated gradient overlay */
-        section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, 
-                rgba(0, 0, 0, 0.7) 0%, 
-                rgba(26, 26, 26, 0.6) 50%, 
-                rgba(0, 0, 0, 0.7) 100%);
-            z-index: 1;
-            transition: opacity 0.5s ease;
-        }
-        
-        section:hover::before {
-            opacity: 0.8;
-        }
-        
-        section > * {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .ascii-badge {
-            position: absolute;
-            top: 5rem;
-            right: 2rem;
-            font-family: "Courier New", monospace;
-            font-size: 0.6rem;
-            line-height: 1.1;
-            white-space: pre;
-            color: #9fef00;
-            opacity: 0.6;
-            text-align: left;
-            transition: all 0.3s ease;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        section:hover .ascii-badge {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        section h1 {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: fadeInUp 1s ease;
-        }
-        
-        section h1 a {
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-        }
-        
-        section h1 a:hover {
-            color: #9fef00;
-            text-shadow: 0 0 20px rgba(159, 239, 0, 0.5);
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .ascii-banner {
-            font-family: "Courier New", monospace;
-            font-size: 0.9rem;
-            line-height: 1.2;
-            white-space: pre;
-            color: #9fef00;
-            display: inline-block;
-            text-align: left;
-            margin: 0 auto 1.5rem;
-            text-shadow: 0 0 10px rgba(159, 239, 0, 0.3);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-        
-        /* Enhanced Social Media Buttons */
-        .social-container {
-            margin-top: 2rem;
-            display: flex;
-            flex-direction: row;
-            gap: 1.5rem;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .social-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            text-decoration: none;
-            color: #f4f4f4;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .social-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .social-link.github:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #fff;
-            color: #fff;
-        }
-        
-        .social-link.htb:hover {
-            background: rgba(159, 239, 0, 0.2);
-            border-color: #9fef00;
-            color: #9fef00;
-            box-shadow: 0 8px 25px rgba(159, 239, 0, 0.3);
-        }
-        
-        .social-icon {
-            width: 24px;
-            height: 24px;
-            filter: brightness(0) invert(1);
-            transition: all 0.3s ease;
-        }
-        
-        .htb-logo {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .htb-logo svg {
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* Content Box */
-        .content-box {
-            max-width: 800px;
-            padding: 2rem;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .content-box:hover {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: rgba(159, 239, 0, 0.3);
-            transform: scale(1.02);
-        }
-        
-        .content-box p {
-            margin: 0.5rem 0;
-        }
-        
-        /* Background colors */
-        section#home {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        }
-        
-        section#projects {
-            background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
-        }
-        
-        section#Skills_Certs {
-            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
-        }
-        
-        section#gallery {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-        }
-        
-        section#about {
-            background: linear-gradient(135deg, #232526 0%, #414345 100%);
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-            background: transparent;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(159, 239, 0, 0.5);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(159, 239, 0, 0.8);
-        }
-        
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            40% {
-                transform: translateX(-50%) translateY(-10px);
-            }
-            60% {
-                transform: translateX(-50%) translateY(-5px);
-            }
-        }
-        
-        .scroll-indicator::before {
-            content: '⌄';
-            font-size: 2rem;
-            color: #9fef00;
-            opacity: 0.7;
-        }
-        
-        /* Consent Banner */
-        #consent-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(26, 26, 26, 0.98);
-            backdrop-filter: blur(10px);
-            border-top: 2px solid #9fef00;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            font-family: Georgia, serif;
-            z-index: 10000;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        #consent-banner p {
-            margin-bottom: 10px;
-        }
-        
-        .consent-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        
-        #accept-analytics,
-        #decline-analytics {
-            padding: 10px 25px;
-            border: 1px solid #9fef00;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: Georgia, serif;
-            transition: all 0.3s ease;
-        }
-        
-        #accept-analytics {
-            background: #9fef00;
-            color: #111;
-        }
-        
-        #accept-analytics:hover {
-            background: #8dd600;
-            box-shadow: 0 0 15px rgba(159, 239, 0, 0.4);
-        }
-        
-        #decline-analytics {
-            background: transparent;
-            color: #9fef00;
-        }
-        
-        #decline-analytics:hover {
-            background: rgba(159, 239, 0, 0.1);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            section h1 {
-                font-size: 2.5rem;
-            }
-            
-            .lead {
-                font-size: 1.2rem;
-            }
-            
-            .navbar {
-                height: auto;              
-                padding: 0.5rem 0;         
-            }
-
-            .navbar ul {
-                flex-wrap: wrap;
-            }
-
-            .navbar ul li {
-                margin: 0.25rem 0.5rem;
-            }
-            
-            .ascii-badge {
-                font-size: 0.5rem;
-                right: 0.5rem;
-            }
-            
-            .social-link {
-                padding: 0.6rem 1rem;
-                font-size: 0.8rem;
-            }
-            
-            .consent-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
+<link rel="stylesheet" href="mainPages.css">
 </head>
 <body>
 
@@ -517,11 +60,11 @@
 
         <div class="content-box">
             <h1><a href="home.html">Home</a></h1>
-            <p class="lead">Portfolio of a conservationist turned cybersecurity student building
+            <a href="home.html" class="lead">Portfolio of a conservationist turned cybersecurity student building
                             security tools, Python and Golang automation scripts, and lab
                             environments for penetration testing and Capture The Flag challenges.
                             Focused on practical problem solving and hands-on cybersecurity
-                            experiments.</p>
+                            experiments.</a>
             <br>
             
             <div class="social-container">
@@ -557,7 +100,7 @@
         
         <div class="content-box">
             <h1><a href="projects/projects.html">Projects</a></h1>
-            <p class="lead">A collection my of hands on tools and experiments, from a Python web scraper (Netnoodle) to CTF write ups and lab environments.</p>
+            <a href="projects/projects.html" class="lead">A collection my of hands on tools and experiments, from a Python web scraper (Netnoodle) to CTF write ups and lab environments.</a>
             <br>
             
             <div class="social-container">
@@ -592,7 +135,7 @@
         
         <div class="content-box">
             <h1><a href="Skills_Certs.html">Skills & Certs</a></h1>
-            <p class="lead">Snapshot of the tools and platforms that have been worked with: Linux, Python, Bash, Git, VS Code and common security tooling.</p>
+            <a href="Skills_Certs.html" class="lead">Snapshot of the tools and platforms that have been worked with: Linux, Python, Bash, Git, VS Code and common security tooling.</a>
             <br>
             
             <div class="social-container">
@@ -627,7 +170,7 @@
         
         <div class="content-box">
             <h1><a href="gallery.html">Gallery</a></h1>
-            <p class="lead">Selected images from the years I spent in wildlife conservation and physical security work.</p>
+            <a href="gallery.html" class="lead">Selected images from the years I spent in wildlife conservation and physical security work.</a>
             <br>
             
             <div class="social-container">
@@ -662,7 +205,7 @@
         
         <div class="content-box">
             <h1><a href="about.html">About</a></h1>
-            <p class="lead">A brief overview of my path from protecting landscapes and infrastructure to studying networks, exploits and defensive security.</p>
+            <a href="about.html" class="lead">A brief overview of my path from protecting landscapes and infrastructure to studying networks, exploits and defensive security.</a>
             <br>
             <div class="social-container">
                 <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
