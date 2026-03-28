@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Legacy HTB machine</title>
+    <link rel="stylesheet" href="../../FieldNotes/articles/articles.css">
+
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../../home.html">Home</a></li>
+            <li><a href="../../projects.html" class="active">Projects</a></li>
+            <li><a href="../../skills_certs.html">Skills & Certs</a></li>
+            <li><a href="../../gallery.html">Gallery</a></li>
+            <li><a href="../../about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <pre class="ascii-badge">    *~~~\_._/~~~*       
+   *~  ( o o )  ~*    
+  *~   (  -  )   ~*  
+ **~~~o("===")o~~~**   
+**\/\/\/\/\/\/\/\/\**</pre>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Legacy</h1>
+            <p class="lead">This was a fun Hack The Box machine</p>
+            <p>Please note that the flag is not visible here, learning is not done through copy and paste ;-)</p>
+        </div>
+
+        <div class="content-section">
+
+        <p>Legacy is classed as an Easy Box.</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy0.jpg" alt="The box banner" class="responsive-img">
+        </div>
+
+        <p>It was honestly a lot of fun doing this box, and although classed as an easy box, I still learnt from it and enjoyed the challenge.</p>
+
+        <p>The main goal of doing these writeups is part of my continuous learning journey.</p>
+        
+        <p> I use these writeups as a method of practicing my documentation skills =-).</p>
+
+        <p>For this box I was working with the IP address 10.129.227.181</p>
+
+        <p>To begin this journey, I started with some basic Nmap scans, my go to is normally a variation of the following:</p>
+
+        <p>nmap -sV -p- ***.***.***.*** (of course this time I input the IP address.)</p>
+
+        <p>In more realistic workspaces you probably would want to avoid something as loud as what I have done here, but for the easy boxes on Hack The Box it works quite well.</p>
+
+        <p>From the initial scan I was able to find the following services:</p>
+
+        <p>TCP:</p>
+
+        <p>PORT      STATE    SERVICE<br>
+        135/tcp   open     msrpc<br>
+        139/tcp   open     netbios-ssn<br>
+        445/tcp   open     microsoft-ds</p>
+
+        <p>UDP:</p>
+
+        <p>For the UDP scan I add in the -sU, these normally take a while but often worth doing.</p>
+
+        <p>PORT     STATE         SERVICE<br>
+        123/udp  open          ntp<br>
+        137/udp  open          netbios-ns</p>
+
+        <p>A useful flag in Nmap is the -sC which includes default scripts from Nmaps scripting engine which is truly an amazing feature in Nmap.</p>
+
+        <p>I ran a second scan specifically to look into the open TCP ports that we found in the first scan</p>
+
+        <p>nmap -sC -sV 10.129.227.181 -p 135,139,445</p>
+
+        <p>PORT    STATE SERVICE      VERSION<br>
+        135/tcp open  msrpc        Microsoft Windows RPC<br>
+        139/tcp open  netbios-ssn  Microsoft Windows netbios-ssn<br>
+        445/tcp open  microsoft-ds Windows XP microsoft-ds<br>
+        Service Info: OSs: Windows, Windows XP; CPE: cpe:/o:microsoft:windows,</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy1.jpg" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>Now a few things stand out to me so far, mainly the port 139 as we can see it is running netbios-ssn.</p>
+
+        <p>A quick google search will show you that this allows applications to establish sessions for data exchange, often used by SMB (Server Message Block). Now this is where it gets fun, the first thing on my mind when I look at anything involving SMB is the famous EternalBlue exploit, which if you don’t know about, I would highly recommend reading up on it, it is a very interesting story, and that thought pattern proved to be very useful in this case.</p>
+
+        <p>Now leaning again on Nmap's scripting engine I had found there are SMB specific scripts that can be run against a target.</p>
+
+        <p>In looking into these scripts I found one that I think would work well, that is with the flag</p>
+
+        <p>–script=smb-vuln*</p>
+
+
+        <p>And now we have something actionable, Nmap has found a vulnerability we can try and exploit.</p>
+
+        <p>Host script results:</p>
+
+        <p>| smb-vuln-ms08-067:<br>
+        |   VULNERABLE:<br>
+        |   Microsoft Windows system vulnerable to remote code execution (MS08-067)<br>
+        |     State: VULNERABLE<br>
+        |     IDs:  CVE:CVE-2008-4250<br>
+        |           The Server service in Microsoft Windows 2000 SP4, XP SP2 and SP3, Server 2003 SP1 and SP2,</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy2.jpg" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>We then take this information and look into how we can exploit this.</p>
+
+        <p>Take note of the other vulnerability that is listed in these results ;-)</p>
+
+        <p>There are many ways to achieve an exploit, and everyone has their own preferred methods.</p>
+
+        <p>I was introduced to Metasploit while doing a Cyber Opps class at University and it is a fascinating tool. While I have seen talk about how script kiddies are the ones who use this I have found that I have learned a lot from using it and it, in its own way has helped me grow. So I guess I too am but a humble script kiddy.</p>
+
+        <p>So into Metasploit we go, to see if we can find a module that may help us in pwning this box.</p>
+
+        <p>Taking what we got from Nmap I used the search function for the CVE CVE-2008-4250</p>
+
+        <p>msf > search CVE-2008-4250</p>
+
+        <p>and what do you know, we have something there.</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy3.jpg" alt="Metasploit results" class="responsive-img">
+        </div>
+
+        <p>So using what we know from everything we have done and documented so far(If you are not documenting, you should be), I decided to use option 8 targeting XP</p>
+
+        <p>msf > use 8</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy5.jpg" alt="Metasploit options" class="responsive-img">
+        </div>
+
+        <p>Now when configuring Metasploit there are a few things you should look at such as your LHOST and RHOSTS.</p>
+
+        <p>Depending on your firewall you may need to open up a port there too to listen for a connection back to your machine (don’t forget to close this when you are done)</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy4.jpg" alt="show ufw command" class="responsive-img">
+        </div>
+
+        <p>Once you have set everything correctly, it truly is as simple as using the run command.</p>
+
+        <p>And we are in!</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy6.jpg" alt="Initial access on the box" class="responsive-img">
+        </div>
+
+        <p>Once we are in there are a few things to check.</p>
+
+        <p>Where are you, and who are you are generally the first things to check, once you know that you can continue to plan.</p>
+
+        <p>We got lucky with CVE-2008-4250 and we are in a highly favorable position.</p>
+
+        <p>I moved to the root directory to start my search of the flags, and after a little bit of poking around, I had found them</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/legacy7.jpg" alt="Found the flags" class="responsive-img">
+        </div>
+        
+        <p>I found the flags!!!</p>
+
+        <p>They are in the following places</p>
+
+        <p>user flag C:\Documents and Settings\john\Desktop<br>
+        e*****************************f</p>
+
+        <p>root flag C:\Documents and Settings\Administrator\Desktop<br>
+        9*****************************3</p>
+
+        <p>Over all this box was a lot of fun, and allowed me to work with the Metasploit framework which I enjoyed.</p>
+           
+
+            <p>Happy Hacking :-)</p>
+        </div>
+
+        <div class="social-container">
+            <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
+                <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://app.hackthebox.com/profile/2040383" target="_blank" rel="noopener noreferrer" class="social-link htb">
+                <div class="htb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.996 0L1.11803 6V18L11.996 24L22.874 18V6L11.996 0Z" fill="#9FEF00"/>
+                        <path d="M14.5 8.5L12 7L9.5 8.5V11.5L7 13L9.5 14.5V17.5L12 19L14.5 17.5V14.5L17 13L14.5 11.5V8.5Z" fill="#1C1C1C"/>
+                        <path d="M12 10.5L13.5 11.5V13.5L12 14.5L10.5 13.5V11.5L12 10.5Z" fill="#9FEF00"/>
+                    </svg>
+                </div>
+                <span>Hack The Box</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
