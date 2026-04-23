@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Step-by-step write-up of the NCL E-Gov web application challenge, demonstrating Burp Suite usage, cookie manipulation, and web exploitation techniques.">
+    <meta property="og:title" content="NCL E-Gov Web App Challenge Write-Up">
+    <meta property="og:description" content="A practical walkthrough of exploiting a web application using Burp Suite and cookie manipulation.">
+    <meta property="og:image" content="../NCL_Spring26_images/E-Gov4">
+    <meta property="og:type" content="article">
+    <title>NCL Web App Challenge E-Gov Write-Up | Cybersecurity Portfolio</title>
+    <link rel="stylesheet" href="NCL_writeups.css">
+
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../../home.html">Home</a></li>
+            <li><a href="../../projects.html" class="active">Projects</a></li>
+            <li><a href="../../skills_certs.html">Skills & Certs</a></li>
+            <li><a href="../../gallery.html">Gallery</a></li>
+            <li><a href="../../about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <pre class="ascii-badge">    *~~~\_._/~~~*       
+   *~  ( o o )  ~*    
+  *~   (  -  )   ~*  
+ **~~~o("===")o~~~**   
+**\/\/\/\/\/\/\/\/\**</pre>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1> Web App Challenge: E-Gov </h1>
+            <p class="lead">This was a fun NCL challenge under Web Application Exploitation </p>
+            <p>Please note that the flag is not visible here, learning is not done through copy and paste ;-)</p>
+            <p>This challenge was classified as Easy</p>
+        </div>
+
+        <div class="content-section">
+
+        <p>I very much enjoy web app challenges in general, and this one was a fun warm-up that can be completed fairly quickly.</p>
+
+        <p>Whenever I start any web app challenge, my first stop is always Burp Suite. I use the Community Edition, as I am a student and cannot currently afford a license (hint hint PortSwigger 😄). If you are unfamiliar with Burp Suite, PortSwigger has some amazing lessons available on their website: https://portswigger.net/web-security.</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov1.png" alt="Burp Suite landing page" class="responsive-img">
+        </div>
+        
+        <p>My normal SOP (Standard Operating Procedure) is to open up the Burp Chromium browser and start poking around.</p>
+
+        <p>When we visit the provided link, we are taken to the Cyber Skyline E-Gov admin login page.</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov2.png" alt="Login page" class="responsive-img">
+        </div>
+
+        <p>Login pages are always interesting to tackle. There are so many moving parts and considerations for the development team that simple mistakes can sometimes slip through.</p>
+
+        <p>So, we start poking around a little bit.</p>
+
+        <p>Something that may seem too obvious—but actually happens quite often—is the use of default credentials such as “admin” and “password” (which, as you can imagine, is not good practice).</p>
+
+        <p>Thankfully, or rather, unluckily for us—that is not the case for this site.</p>
+        
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov3.png" alt="invalid credentials" class="responsive-img">
+        </div>
+
+        <p>But that is fine. It just means we need to dig a little deeper and build a better picture of what is happening.</p>
+
+        <p>A quick way to start exploring is through the browser’s developer tools. You can access these by right clicking and selecting “Inspect” or by pressing Ctrl + Shift + I.</p>
+
+        <p>You will be greeted with something that looks like this</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov4.png" alt="Dev tools" class="responsive-img">
+        </div>
+
+        <p>In the Elements section, I can see that the page is calling a script—specifically <code>/static/js/login.js</code>.</p>
+
+        <p>This is something we want to look at, as it may give us clues about what the web app expects from a user.</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov5.png" alt="source" class="responsive-img">
+        </div>
+        
+        <p>Here we see a couple of things, but what catches my eye the most is the <code>/admin</code> endpoint that it points to.</p>
+
+        <p>The next logical step is to see if I can manually alter the HTML to access it without logging in.</p>
+
+        <p>This is highly unlikely to work, but it may still provide useful information from the response.</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov6.png" alt="404" class="responsive-img">
+        </div>
+        
+        <p>As expected, that approach does not work—but that does not mean all hope is lost.</p>
+
+        <p>This is where Burp Suite really starts to shine.</p>
+
+        <p>When I go back to Burp Suite, I can see that we have some interesting information to work through.</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov7.png" alt="requests" class="responsive-img">
+        </div>
+        
+        <p>What stands out to me is the cookie value—it is currently set to <code>admin=false</code>.</p>
+
+        <p>So the obvious question becomes: what happens if we set it to <code>true</code>?</p>
+
+        <p>Burp Suite has a powerful tool for working with requests called Repeater.</p>
+
+        <p>I right-click the request and send it to Repeater.</p>
+
+        <p>From there, we can begin manipulating the request to observe how the application responds.</p>
+
+        <p>The first change I make is setting <code>admin=true</code> and seeing what happens.</p>
+        
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov8.png" alt="Repeater" class="responsive-img">
+        </div>
+
+        <p>And just like that—we have something.</p>
+
+        <p>The response panel initially shows the formatted code, but for quick analysis I prefer using the “Render” option.</p>
+
+        <p>Once rendered, we can see that we have successfully accessed the admin dashboard—right where we want to be—with the flag visible.</p>
+
+        <p>Overall, this was a fun challenge and a great way to warm up, whether for individual practice, team competitions, or just for the enjoyment of solving problems.</p>
+
+        <div class="gallery-image"> 
+        <img src="../NCL_Spring26_images/E-Gov9.png" alt="Submission" class="responsive-img">
+        </div>
+
+        
+            <p>Happy Hacking :-)</p>
+        </div>
+
+        <div class="social-container">
+            <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
+                <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://app.hackthebox.com/profile/2040383" target="_blank" rel="noopener noreferrer" class="social-link htb">
+                <div class="htb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.996 0L1.11803 6V18L11.996 24L22.874 18V6L11.996 0Z" fill="#9FEF00"/>
+                        <path d="M14.5 8.5L12 7L9.5 8.5V11.5L7 13L9.5 14.5V17.5L12 19L14.5 17.5V14.5L17 13L14.5 11.5V8.5Z" fill="#1C1C1C"/>
+                        <path d="M12 10.5L13.5 11.5V13.5L12 14.5L10.5 13.5V11.5L12 10.5Z" fill="#9FEF00"/>
+                    </svg>
+                </div>
+                <span>Hack The Box</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
