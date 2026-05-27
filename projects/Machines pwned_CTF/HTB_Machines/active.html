@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Active HTB machine</title>
+    <link rel="stylesheet" href="../../FieldNotes/articles/articles.css">
+
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../../home.html">Home</a></li>
+            <li><a href="../../projects.html" class="active">Projects</a></li>
+            <li><a href="../../skills_certs.html">Skills & Certs</a></li>
+            <li><a href="../../gallery.html">Gallery</a></li>
+            <li><a href="../../about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <pre class="ascii-badge">    *~~~\_._/~~~*       
+   *~  ( o o )  ~*    
+  *~   (  -  )   ~*  
+ **~~~o("===")o~~~**   
+**\/\/\/\/\/\/\/\/\**</pre>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Active</h1>
+            <p class="lead">Getting back into Windows environments a little bit more</p>
+            <p>Please note that the flag is not visible here, learning is not done through copy and paste ;-)</p>
+        </div>
+
+        <div class="content-section">
+        
+        <p>Active is classed as an Easy Box on Hack The Box.</p>
+
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active1.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>I was working with the IP address 10.129.69.55</p>
+
+        <p>As always we start with a little nmap scan to see what is going on.</p>
+
+        <p>Now on a live network this would not always be your first option because nmap can be quite noisy, but here we can go for it.</p>
+
+        <p>I am also doing this machine in Guided mode because I am feeling a bit rusty with targeting windows machines. Windows is not really my strong suit, and I am making an effort to get through boxes without the use of AI.</p>
+
+        <p>To begin I ran:</p>
+
+        <p>nmap -sV -sC 10.129.69.55</p>
+
+        <p>The scan gives us a pretty good sign that we are dealing with an Active Directory environment.</p>
+        
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active2.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>Some ports that immediately stand out are:</p>
+
+        <p>53/tcp domain<br>
+        88/tcp kerberos-sec<br>
+        389/tcp ldap<br>
+        445/tcp microsoft-ds</p>
+
+        <p>We can also see the domain name:</p>
+
+        <p>active.htb</p>
+
+        <p>One of the first guided questions asks how many SMB shares are shared by the target.</p>
+
+        <p>To help with SMB enumeration I spent a bit of time reading through some articles regarding SMB enumeration and smbclient usage.</p>
+
+        <p>https://medium.com/@mpotisambo8/smb-enumeration-8793abac9ce0</p>
+
+        <p>The author writes about how they enumerated a different setup, but I used it mainly for ideas regarding SMB.</p>
+
+        <p>This one was also very useful:</p>
+
+        <p>https://medium.com/@ibo1916a/smbclient-command-2803de274e46</p>
+
+        <p>The tool that seemed to work best for me here was smbmap. This was also my first time using this tool.</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active3.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>From enumeration we find that the share allowing anonymous read access is:</p>
+
+        <p>Replication</p>
+
+          
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active4.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>As we can see from the enumeration output, this share is set to READ ONLY.</p>
+
+        <p>The next question asks which file has encrypted account credentials in it.</p>
+
+        <p>This one took me a min and a bit of poking around. I also had to look up how to navigate around in smbclient properly, but eventually I found:</p>
+
+        <p>Groups.xml</p>
+
+        <p>Inside we find:</p>
+
+        <p>cpassword="e********/****************/********"</p>
+
+          
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active5.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>Knowing the right tool to use is honestly half of the battle with machines like this.</p>
+
+        <p>Here again we encounter a tool I had not used before:</p>
+
+        <p>gpp-decrypt</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active6.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>Using that against the cpassword value gives us:</p>
+
+        <p>G********************8</p>
+
+        <p>Now with the user and password we can try:</p>
+
+        <p>smbclient -L //10.129.69.55 -U active.htb/SVC_TGS</p>
+
+        <p>The connection eventually fails regarding SMB1 workgroup listing, but the important thing is that we now know we have valid credentials.</p>
+
+        <p>And now we are onto another new tool for me:</p>
+
+        <p>Impacket</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active7.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>Specifically:</p>
+
+        <p>impacket-GetUserSPNs active.htb/SVC_TGS:'GPP**************2k18' -dc-ip 10.129.69.55 -request</p>
+
+        <p>And it looks like we have something interesting here.</p>
+
+        <p>The output reveals that the Administrator account is vulnerable to Kerberoasting and gives us a Kerberos TGS hash.</p>
+
+        <p>$krb5tgs$23$*Administrator$ACTIVE.HTB...</p>
+
+        <p>Thanks to a fantastic Hashcat cheat sheet, we find that Kerberos 5 TGS-REP etype 23 mode is:</p>
+
+        <p>13100</p>
+
+        <p>Using rockyou.txt the password cracks pretty quickly:</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active8.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active9.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>T**************8</p>
+
+        <p>Now we can test Administrator access:</p>
+
+        <p>smbclient -L //10.129.69.55 -U active.htb/Administrator</p>
+
+        
+        <p>This on the surface appears to have failed, however, the password was accepted even though the session failed.</p>
+        
+        <p>So from there we try:</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active10.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active11.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>smbclient //10.129.69.55/C$ -U Administrator</p>
+
+        <p>Now we have access and can start exploring around the system a little bit more.</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active12.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>The guided task asks us to submit the flag located on the security user's desktop.</p>
+
+        <p>To find this we need to think back to the previous user:</p>
+
+        <p>SVC_TGS</p>
+
+        <p>Navigating through the Users directory we eventually get through to the SVC_TGS desktop and find:</p>
+
+        <p>user.txt</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active13.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>One of the final guided questions asks which service account on Active is vulnerable to Kerberoasting.</p>
+
+        <p>If like me you need to brush up on Kerberoasting a little bit, this was a pretty interesting read:</p>
+
+        <p>https://www.sentinelone.com/cybersecurity-101/threat-intelligence/what-is-kerberoasting-attack/</p>
+
+        <p>And finally the plaintext Administrator password was:</p>
+
+        <p>T************8</p>
+
+        <div class="gallery-image"> 
+        <img src="../writeup_images/Active14.png" alt="Nmap results" class="responsive-img">
+        </div>
+
+        <p>Overall this was a really nice machine for getting back into Windows environments a bit more.</p>
+
+        <p>It also introduced me to a few tools I had either never used before or had very little experience with, especially smbmap and some of the Impacket tooling.</p>
+
+        <p>Happy Hacking :-)</p>
+
+        </div>
+
+        <div class="social-container">
+            <a href="https://github.com/Brynn-P" target="_blank" rel="noopener noreferrer" class="social-link github">
+                <svg class="social-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://app.hackthebox.com/profile/2040383" target="_blank" rel="noopener noreferrer" class="social-link htb">
+                <div class="htb-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.996 0L1.11803 6V18L11.996 24L22.874 18V6L11.996 0Z" fill="#9FEF00"/>
+                        <path d="M14.5 8.5L12 7L9.5 8.5V11.5L7 13L9.5 14.5V17.5L12 19L14.5 17.5V14.5L17 13L14.5 11.5V8.5Z" fill="#1C1C1C"/>
+                        <path d="M12 10.5L13.5 11.5V13.5L12 14.5L10.5 13.5V11.5L12 10.5Z" fill="#9FEF00"/>
+                    </svg>
+                </div>
+                <span>Hack The Box</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
